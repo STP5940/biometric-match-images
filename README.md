@@ -1,8 +1,4 @@
-# Quick install
-
-Installing Biometric
-
-# การติดตั้ง
+# วิธีการติดตั้ง
 
 สร้าง venv สำหรับโปรเจคบน python:
 ``` sh
