@@ -53,7 +53,7 @@ if loaded_embeddings:
     probe_result = biometric_converter.process_face_image("testFace.png")
     ...
 ```
-และรันคำสั่งเพื่อตรวจสอบความเข้ากันของใบหน้าจากในฐานข้อมูลจำลอง
+และรันคำสั่งเพื่อตรวจสอบภาพใบหน้า testFace.png กับในฐานข้อมูลจำลอง
 ```
 python biometric.py
 ```
