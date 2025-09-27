@@ -7,9 +7,11 @@ python -m venv biometricenv
 
 เปิดเข้าใช้งาน venv ที่สร้างไว้:
 ``` sh
-# Windows
+# เปิดใช้ (Windows)
 biometricenv\Scripts\activate
-# or Linux
+```
+``` sh
+# หรือ (macOS/Linux)
 source biometricenv/bin/activate
 ```
 
@@ -23,7 +25,7 @@ pip install -r requirements.txt
 pip list
 ```
 
-# วิธีการใช้งานเพื่อนทดสอบ
+# วิธีการใช้งานเพื่อทดสอบ
 
 * ถ้ายังไม่มีรูปที่ Crop แล้วใน cropped_images ให้ใช้คำนี้:
 
