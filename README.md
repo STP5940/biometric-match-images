@@ -17,12 +17,12 @@ source biometricenv/bin/activate
 
 สั่งติดตั้ง lib ที่ต้องใช้ในโปรเจค:
 ``` sh
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 ```
 
 เช็ค lib ที่ติดตั้งไว้:
 ``` sh
-pip list
+python -m pip list
 ```
 
 # วิธีการใช้งานเพื่อทดสอบ

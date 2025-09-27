@@ -429,6 +429,11 @@ if __name__ == "__main__":
     start_time = time.time()
     min_score = 0.6
 
+    # สกัด biometric features
+    print("⛏️ Extract biometric features: ")
+    extractbiometric = biometric_converter.process_face_image(image_path="testFace.png")
+    print(extractbiometric['embedding'])
+
     # save_mode: insert or overwrite
 
     # ตัวอย่างการประมวลผลทั้งโฟลเดอร์
@@ -444,34 +449,34 @@ if __name__ == "__main__":
     # )
 
     # ตัวอย่างการโหลดและเปรียบเทียบ
-    loaded_embeddings = biometric_converter.load_embeddings("embeddings.pkl")
-    if loaded_embeddings:
-        probe_result = biometric_converter.process_face_image("testFace.png")
-        if probe_result:
-            # ใช้ฟังก์ชัน verify_identity แยก
-            verification_result = biometric_converter.verify_identity(
-                probe_result["embedding"], loaded_embeddings, threshold=0.8
-            )
+    # loaded_embeddings = biometric_converter.load_embeddings("embeddings.pkl")
+    # if loaded_embeddings:
+    #     probe_result = biometric_converter.process_face_image("testFace.png")
+    #     if probe_result:
+    #         # ใช้ฟังก์ชัน verify_identity แยก
+    #         verification_result = biometric_converter.verify_identity(
+    #             probe_result["embedding"], loaded_embeddings, threshold=0.8
+    #         )
 
-            # ใช้ฟังก์ชัน get_top_matches แยก
-            matches_result = biometric_converter.get_matches(
-                probe_result["embedding"], loaded_embeddings, threshold=min_score
-            )
+    #         # ใช้ฟังก์ชัน get_top_matches แยก
+    #         matches_result = biometric_converter.get_matches(
+    #             probe_result["embedding"], loaded_embeddings, threshold=min_score
+    #         )
 
-            print("=" * 60)
-            print(f"🔍 Verified: {verification_result['verified']}")
-            print(f"📊 Best Score: {verification_result['best_score']:.4f}")
-            print(f"🎯 Best Match: {verification_result['best_match']}")
-            print("")
+    #         print("=" * 60)
+    #         print(f"🔍 Verified: {verification_result['verified']}")
+    #         print(f"📊 Best Score: {verification_result['best_score']:.4f}")
+    #         print(f"🎯 Best Match: {verification_result['best_match']}")
+    #         print("")
 
-            print(f"🏆 Min Score {min_score} Matches:")
-            for i, match in enumerate(matches_result["matches"], 1):
-                print(
-                    f"{i}. {match['filename']} ความมั่นใจ: {match['score']:.4f}"
-                )
+    #         print(f"🏆 Min Score {min_score} Matches:")
+    #         for i, match in enumerate(matches_result["matches"], 1):
+    #             print(
+    #                 f"{i}. {match['filename']} ความมั่นใจ: {match['score']:.4f}"
+    #             )
 
-            print("=" * 60)
-            print(f"📈 Total matches: {matches_result['total_matches']}/{len(loaded_embeddings)}")
+    #         print("=" * 60)
+    #         print(f"📈 Total matches: {matches_result['total_matches']}/{len(loaded_embeddings)}")
 
-            processing_time = time.time() - start_time
-            print(f"⏱️  เวลาประมวลผล: {processing_time:.2f} วินาที")
+    #         processing_time = time.time() - start_time
+    #         print(f"⏱️  เวลาประมวลผล: {processing_time:.2f} วินาที")
