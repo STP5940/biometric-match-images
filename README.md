@@ -27,7 +27,7 @@ pip list
 
 # วิธีการใช้งานเพื่อทดสอบ
 
-* ถ้ายังไม่มีรูปที่ Crop แล้วใน cropped_images ให้ใช้คำนี้:
+## ถ้ายังไม่มีรูปที่ Crop แล้วใน cropped_images ให้ใช้คำสั่งตามนี้
 
 สั่ง Crop ใบหน้าจาก input_images ไปเก็บไว้ที่ cropped_images
 ```
