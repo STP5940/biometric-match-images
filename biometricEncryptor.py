@@ -3,6 +3,7 @@ import base64
 import numpy as np
 from phe import paillier
 import os
+import time
 import getpass
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes
@@ -476,6 +477,42 @@ class biometricEncryptor:
 
 
 # Example usage and testing
+def originalToEncrypted():
+    """Example usage of the biometricEncryptor"""
+
+    # Initialize with password protection (recommended)
+    password = getpass.getpass(
+        "Set password for private key (optional, press enter to skip): "
+    )
+    encryptor = biometricEncryptor(password=password if password else None)
+
+    # Display key information
+    key_info = encryptor.get_key_info()
+    print(f"Using {key_info['key_size']}-bit Paillier keys")
+
+    # Example: Face recognition embedding (128-dimensional)
+    print("\n=== Biometric Encryption Demo ===")
+
+    # โหลดกลับมาเพื่อตรวจสอบ
+    original_templatename = "original_template.json"
+    encrypted_templatename = "encrypted_template.json"
+
+    original_embedding = encryptor.load_original_template(original_templatename)
+    print(f"Loaded Original Embedding shape: {original_embedding.shape}")
+    print(f"First 5 values: {original_embedding[:5]}")
+    print("Original Template loaded successfully!")
+
+    # Normalized embedding And Save to original template
+    normalized_embedding = encryptor.normalize_embedding(original_embedding)
+    encryptor.save_original_template(normalized_embedding, original_templatename)
+
+    # Encryption
+    print("\nEncrypting biometric template...")
+    encrypted_embedding = encryptor.encrypt_embedding(original_embedding)
+    # Save template
+    encryptor.save_encrypted_template(encrypted_embedding, encrypted_templatename)
+
+
 def testFormNew():
     """Example usage of the biometricEncryptor"""
 
@@ -520,15 +557,16 @@ def testFormFile():
 
     # Example: Face recognition embedding (128-dimensional)
     print("\n=== Biometric Encryption Demo ===")
+    start_time = time.time()
 
     # โหลดกลับมาเพื่อตรวจสอบ
-    original_embedding = encryptor.load_original_template("original_template.json")
+    original_embedding = encryptor.load_original_template("original_sitthipong1.json")
     print(f"Loaded Original Embedding shape: {original_embedding.shape}")
     print(f"First 5 values: {original_embedding[:5]}")
     print("Original Template loaded successfully!")
     # Load template
     print("\nLoading Encrypted Template...")
-    encrypted_embedding = encryptor.load_encrypted_template("encrypted_template.json")
+    encrypted_embedding = encryptor.load_encrypted_template("encrypted_sitthipong2.json")
     print("Encrypted Template loaded successfully!")
 
     # ทดสอบกับ embedding ที่ต่าง
@@ -546,6 +584,9 @@ def testFormFile():
     else:
         print("❌ VERIFICATION FAILED - ไม่คล้ายกัน")
 
+    processing_time = time.time() - start_time
+    print(f"⏱️  เวลาประมวลผล: {processing_time:.2f} วินาที")
+
     # Decryption with private key
     # print("\nDecrypting template...")
     # decrypted_embedding = encryptor.decrypt_embedding(encrypted_embedding)
@@ -553,8 +594,11 @@ def testFormFile():
 
 
 if __name__ == "__main__":
+    # แปลงข้อมูลต้นทางที่ยังไม่ได้ normalize ให้เข้ารหัส
+    # originalToEncrypted()
+
     # ทดสอบแบบสร้างข้อมูลใหม่
-    # testFormNew()
+    testFormNew()
 
     # ทดสอบแบบโหลดข้อมูลมาจากไฟล์
-    testFormFile()
+    # testFormFile()

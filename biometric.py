@@ -10,6 +10,8 @@ from facenet_pytorch import InceptionResnetV1
 import pickle
 from typing import Dict, List, Optional, Tuple
 
+from cropfaces import FaceCropper
+
 
 class BiometricConverter:
     def __init__(self, model_type: str = "vggface2", device: str = None):
@@ -59,14 +61,14 @@ class BiometricConverter:
         except Exception as e:
             print(f"❌ Error converting image to tensor: {e}")
             return None
-        
+
     def image_to_tensor_from_memory(self, image: Image.Image) -> Optional[torch.Tensor]:
         """
         แปลง PIL Image เป็น tensor ที่เหมาะสมสำหรับ FaceNet
-        
+
         Args:
             image (Image.Image): PIL Image object
-            
+
         Returns:
             Optional[torch.Tensor]: Tensor ของภาพ หรือ None หากเกิดข้อผิดพลาด
         """
@@ -145,21 +147,21 @@ class BiometricConverter:
             "embedding_shape": embedding.shape,
             "model_type": self.model_type,
         }
-    
+
     def process_face_image_from_memory(self, image_data: bytes) -> Optional[Dict]:
         """
         ประมวลผลภาพจาก memory data และสกัด biometric features
-        
+
         Args:
             image_data (bytes): ข้อมูลภาพในรูปแบบ bytes
-            
+
         Returns:
             Optional[Dict]: Dictionary ที่มี biometric data หรือ None หากเกิดข้อผิดพลาด
         """
         try:
             # แปลง bytes data เป็น PIL Image
             image = Image.open(io.BytesIO(image_data)).convert("RGB")
-            
+
             # แปลงภาพเป็น tensor
             image_tensor = self.image_to_tensor_from_memory(image)
             if image_tensor is None:
@@ -183,7 +185,7 @@ class BiometricConverter:
                 "embedding_shape": embedding.shape,
                 "model_type": self.model_type,
             }
-            
+
         except Exception as e:
             print(f"❌ Error processing image from memory: {e}")
             return None
@@ -423,16 +425,25 @@ class BiometricConverter:
 
 # ตัวอย่างการใช้งาน
 if __name__ == "__main__":
+    # สร้าง instance ของ FaceCropper
+    cropper = FaceCropper(margin=15, image_size=160)
+
     # สร้าง instance
     biometric_converter = BiometricConverter(model_type="vggface2")
 
     start_time = time.time()
     min_score = 0.6
+    testFaceFile = "testFace.png"
+    testFaceCroppedFile = "testFaceCropped.png"
 
     # สกัด biometric features
     print("⛏️ Extract biometric features: ")
-    extractbiometric = biometric_converter.process_face_image(image_path="testFace.png")
-    print(extractbiometric['embedding'])
+    # ต้องใช้ภาพที่ cropped ไปเช็คเพื่อความแม่นยำ
+    cropper.crop_single_face(testFaceFile, testFaceCroppedFile)
+    extractbiometric = biometric_converter.process_face_image(
+        image_path=testFaceCroppedFile
+    )
+    print(f"Decrypted first 5 values: {extractbiometric['embedding'][:5]}")
 
     # save_mode: insert or overwrite
 
@@ -443,7 +454,7 @@ if __name__ == "__main__":
     # ตัวอย่างการประมวลผลภาพเดียว
     # print("📷 Processing single image example:")
     # single_result = biometric_converter.process_single_image(
-    #     image_path="testFace.png",
+    #     image_path=fileTestFace,
     #     save_path="embeddings.pkl",
     #     save_mode="insert"
     # )
@@ -451,7 +462,9 @@ if __name__ == "__main__":
     # ตัวอย่างการโหลดและเปรียบเทียบ
     # loaded_embeddings = biometric_converter.load_embeddings("embeddings.pkl")
     # if loaded_embeddings:
-    #     probe_result = biometric_converter.process_face_image("testFace.png")
+    #     # ต้องใช้ภาพที่ cropped ไปเช็คเพื่อความแม่นยำ
+    #     cropper.crop_single_face(testFaceFile, testFaceCroppedFile)
+    #     probe_result = biometric_converter.process_face_image(testFaceCroppedFile)
     #     if probe_result:
     #         # ใช้ฟังก์ชัน verify_identity แยก
     #         verification_result = biometric_converter.verify_identity(
